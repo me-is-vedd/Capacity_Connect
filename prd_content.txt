@@ -1,0 +1,437 @@
+CapacityConnect
+AI-Powered Capacity Building and Learning Management Portal
+Version: 1.0Platform: Web ApplicationPrimary Technology: Python + Streamlit + SQLiteTarget: Hackathon
+1. Product Overview
+CapacityConnect is a centralized web-based platform designed to support organizational training, competency development, personalized learning, and institutional knowledge sharing.
+Unlike a conventional Learning Management System (LMS), CapacityConnect focuses on identifying what an employee needs to learn, rather than simply presenting a list of available courses.
+The platform connects:
+Employee Profile → Competency Assessment → Skill Gap → Learning Recommendation → Training → Assessment → Competency Improvement
+The system provides administrators with organization-wide analytics to identify common competency gaps and make better training decisions.
+2. Problem Statement
+Organizations often conduct training programs without having a clear understanding of:
+Which competencies employees currently possess
+Which competencies their roles require
+Where significant skill gaps exist
+Which training programs should be prioritized
+Whether training actually improves competency
+How organizational knowledge and experience can be shared effectively
+Existing learning platforms primarily focus on course delivery and completion.
+CapacityConnect aims to create a system that connects learning with measurable competency development.
+3. Product Vision
+To create an intelligent organizational learning ecosystem that helps every employee understand what they need to learn, helps organizations identify where capacity gaps exist, and preserves valuable institutional knowledge.
+4. Goals
+Primary Goals
+Centralize organizational learning resources.
+Maintain employee competency profiles.
+Identify competency gaps.
+Recommend relevant training based on competency gaps.
+Track learning and assessment progress.
+Measure competency improvement.
+Enable organizational knowledge sharing.
+Provide administrators with organizational capacity analytics.
+Secondary Goals
+Reduce irrelevant training recommendations.
+Make organizational knowledge easier to discover.
+Encourage continuous professional development.
+Provide data-driven insights for training planning.
+5. Target Users
+5.1 Learner / Employee
+Employees or organizational personnel who use the platform to:
+Assess their skills
+Discover competency gaps
+Complete training
+Take assessments
+Track progress
+Discover organizational knowledge
+Share useful knowledge
+5.2 Administrator
+Users responsible for managing the organization’s learning ecosystem.
+They can:
+Manage users
+Manage departments
+Define organizational roles
+Define competencies
+Map competencies to roles
+Manage courses
+Monitor competency gaps
+Review knowledge contributions
+Analyze organizational training requirements
+6. Core Product Concept
+The platform is built around a Competency-Driven Learning Loop.
+User Profile     ↓Role & Responsibilities     ↓Required Competencies     ↓Competency Assessment     ↓Current Competency Level     ↓Competency Gap     ↓Personalized Learning Recommendation     ↓Course / Training     ↓Assessment     ↓Updated Competency Level     ↓Organizational Analytics
+This loop differentiates CapacityConnect from a conventional LMS.
+7. Competency Framework
+The platform should use a standardized competency scale.
+Example
+Level
+Description
+1
+Awareness
+2
+Basic
+3
+Proficient
+4
+Advanced
+5
+Expert
+Each organizational role can have required competency levels.
+Example: Environmental Data Analyst
+Competency
+Required Level
+Python
+4
+Data Analysis
+4
+GIS
+3
+Statistics
+3
+Environmental Science
+4
+Report Writing
+3
+An employee may have:
+Competency
+Current Level
+Gap
+Python
+2
+2
+Data Analysis
+2
+2
+GIS
+3
+0
+Statistics
+2
+1
+Environmental Science
+4
+0
+Report Writing
+3
+0
+The platform calculates the gap and prioritizes learning accordingly.
+8. Functional Requirements
+8.1 Authentication & User Management
+The system shall provide:
+Login functionality
+Role-based access
+User profiles
+Department assignment
+Designation/role assignment
+Basic account management
+User Roles
+AdministratorTrainer / SMELearner / Employee
+Each role should see an appropriate dashboard.
+8.2 Employee Profile
+The employee profile should contain:
+Name
+Employee ID
+Department
+Designation
+Role
+Experience
+Competencies
+Completed courses
+Assessment results
+Certificates
+Learning progress
+The profile should provide an overview of the employee’s current development status.
+8.3 Competency Management
+Administrators should be able to:
+Create competencies
+Edit competencies
+Define competency descriptions
+Define competency levels
+Assign competencies to roles
+Set required competency levels
+Example:
+Role: Data AnalystPython → Required Level 4Statistics → Required Level 3Data Visualization → Required Level 4
+8.4 Competency Assessment
+Employees should be able to evaluate their competency through assessments.
+The assessment system should support:
+Multiple-choice questions
+Skill-based questions
+Automatic scoring
+Competency mapping
+Assessment history
+The system should convert assessment performance into competency levels.
+Example:
+Assessment Score: 42%Competency Level:2 / 5Required:4 / 5Gap:2 levels
+8.5 Skill Gap Analysis
+The platform shall compare:
+Required Competency        vsCurrent Competency
+and calculate:
+Competency Gap = Required Level - Current Level
+Gap Classification
+0 → No Gap1 → Low Gap2 → Medium Gap3+ → Critical Gap
+The system should prioritize larger gaps.
+8.6 Learning Management
+Trainers and administrators should be able to create courses containing:
+Course title
+Description
+Instructor
+Competencies addressed
+Difficulty level
+Duration
+Videos
+Documents
+Learning resources
+Quizzes
+Final assessment
+Employees should be able to:
+Browse courses
+Enroll
+Continue courses
+Track progress
+Complete assessments
+Receive completion status
+8.7 Competency-to-Course Mapping
+Every course should be associated with one or more competencies.
+Example:
+Course:Python for Data AnalysisImproves:→ Python→ Data Analysis→ Statistics
+This mapping allows the recommendation engine to select relevant courses.
+8.8 Personalized Learning Recommendation
+The recommendation engine should use:
+User role
+Current competency
+Required competency
+Competency gap
+Completed courses
+Assessment history
+to recommend learning resources.
+Example
+Current Data Analysis Level: 2Required Level: 4↓System identifies significant gap↓Recommended:1. Introduction to Data Analysis2. Python for Data Analysis3. Statistical Methods4. Data Analysis Assessment
+The first version can use a rule-based recommendation engine instead of machine learning.
+8.9 Learning Path
+The system should organize recommended resources into a logical sequence.
+Example:
+LEVEL 1Python Fundamentals       ↓LEVEL 2Data Analysis Fundamentals       ↓LEVEL 3Statistics       ↓LEVEL 4Advanced Data Analysis       ↓Assessment
+The employee should be able to see their progress through the learning path.
+8.10 Quiz & Assessment System
+Courses should support quizzes.
+Requirements:
+Multiple-choice questions
+Configurable passing score
+Automatic evaluation
+Score display
+Attempt tracking
+Competency update after successful assessment
+Example:
+Quiz Score: 85%Previous Competency: 2/5New Competency: 3/5
+8.11 Knowledge Hub
+The Knowledge Hub will act as the organization’s centralized knowledge repository.
+Users should be able to access:
+Guidelines
+Reports
+Case studies
+Best practices
+Tutorials
+FAQs
+Field experiences
+Training documents
+Users with appropriate permissions should be able to contribute content.
+8.12 Knowledge Contribution
+Users should be able to submit:
+Documents
+Articles
+Case studies
+Best practices
+Tutorials
+FAQs
+Each submission should contain:
+Title
+Description
+Category
+Department
+Relevant competencies
+Author
+File/resource
+Administrators or authorized reviewers can approve submissions before publication.
+8.13 Knowledge Search
+Users should be able to search the Knowledge Hub.
+Basic Search
+Search by:
+Keyword
+Category
+Department
+Competency
+Content type
+8.16 Employee Dashboard
+The dashboard should display:
+Overview
+Overall competency score
+Learning progress
+Current courses
+Completed courses
+Certificates
+Skill Gaps
+CriticalData Analysis        ██████████MediumStatistics           ██████No Significant GapGIS                  ███
+Recommendations
+Show the employee’s highest-priority learning recommendations.
+8.17 Administrator Dashboard
+The administrator dashboard should provide organization-wide analytics.
+Example
+ORGANIZATION CAPACITYEmployees: 2,450Average Competency: 76%Top Skill Gaps:Data Analytics       34%Climate Modelling    29%GIS                  18%Project Management   15%
+The dashboard should allow filtering by:
+Department
+Role
+Competency
+Time period
+The admin should be able to see these for the indivisual user as well after searching for the particular user:
+Courses leanring and required
+Courses completed
+Assessment performance
+Learner progress
+9. AI Recommendation Logic
+The initial recommendation engine does not need complex machine learning.
+Basic Logic
+FOR each employee:    Get required competencies for role    Get employee's current competencies    Calculate competency gaps    Sort gaps from highest to lowest    Find courses mapped to those competencies    Remove completed courses    Recommend highest-priority courses
+Example
+Required:Python = 4Current:Python = 2Gap:2↓Find courses related to Python↓Remove completed courses↓Rank courses↓Recommend top courses
+A future version can replace this with a machine-learning or LLM-powered recommendation system.
+10. Database Requirements
+For the prototype, SQLite can be used.
+The system should contain entities such as:
+Users
+user_idnameemaildepartmentroledesignation
+Competencies
+competency_idnamedescription
+Role Competencies
+role_idcompetency_idrequired_level
+User Competencies
+user_idcompetency_idcurrent_levellast_assessed
+Courses
+course_idtitledescriptiontrainerdifficultyduration
+Course Competencies
+course_idcompetency_idtarget_level
+Assessments
+assessment_idcourse_idtitlepassing_score
+Questions
+question_idassessment_idquestionoptionscorrect_answer
+Results
+user_idassessment_idscoredate
+Knowledge Resources
+resource_idtitledescriptioncategorydepartmentauthorfile_pathstatus
+11. Recommended Technology Stack
+Frontend
+Streamlit
+Used for:
+Dashboards
+Forms
+Navigation
+Charts
+Course pages
+Assessments
+Knowledge Hub
+Backend
+Python
+Business logic should be separated into modules.
+Example:
+app.pymodules/├── auth.py├── users.py├── competencies.py├── assessments.py├── courses.py├── recommendations.py├── knowledge.py└── analytics.py
+Database
+MVP
+SQLite
+Data Processing
+Python / Pandas
+Visualization
+Plotly / Streamlit charts
+12. MVP Scope
+The first version should NOT attempt to implement every feature.
+MVP Core Flow
+Login ↓Employee Profile ↓Competency Assessment ↓Skill Gap Analysis ↓Course Recommendation ↓Course ↓Quiz ↓Competency Update ↓Progress Dashboard
+MVP Knowledge Flow
+Upload Knowledge ↓Categorize ↓Knowledge Hub ↓Search ↓Read / Download
+MVP Admin Flow
+Admin Login ↓Manage Users ↓Define Competencies ↓Map Competencies to Roles ↓Create Courses ↓View Organization Skill Gaps
+15. Non-Functional Requirements
+Performance
+Dashboard should load quickly.
+Search should return results without noticeable delay.
+Database queries should be optimized.
+Security
+Passwords must not be stored in plain text.
+Users must only access authorized functionality.
+Administrative functions must be protected.
+Uploaded documents should be handled securely.
+Scalability
+The architecture should allow migration from:
+Streamlit + SQLite        ↓Streamlit + PostgreSQL        ↓React + FastAPI + PostgreSQL
+without completely redesigning the business logic.
+Accessibility
+The platform should:
+Work on desktop and mobile browsers.
+Use readable typography.
+Maintain clear navigation.
+Provide understandable charts and feedback.
+Reliability
+The system should:
+Handle invalid inputs.
+Prevent data loss.
+Maintain assessment history.
+Provide appropriate error messages.
+16. Success Metrics
+The prototype can measure:
+Learning
+Course completion rate
+Assessment pass rate
+Average learning progress
+Number of completed learning paths
+Competency
+Average competency score
+Number of identified skill gaps
+Reduction in competency gaps
+Competency improvement after training
+Knowledge
+Number of knowledge resources
+Number of contributions
+Resource views
+Search usage
+Organizational
+Department competency scores
+Most common competency gaps
+Training demand by competency
+17. Example End-to-End User Journey
+Step 1 — Employee logs in
+The employee sees their dashboard.
+Overall Competency: 68%
+Step 2 — Takes assessment
+The system evaluates their current competencies.
+Python: 2/5GIS: 4/5Statistics: 2/5
+Step 3 — System calculates gaps
+PythonRequired: 4Current: 2Gap: 2StatisticsRequired: 3Current: 2Gap: 1
+Step 4 — Recommendations
+The system recommends:
+1. Python for Data Analysis2. Statistics Fundamentals3. Advanced Data Analysis
+Step 5 — Employee completes training
+The employee completes the course and quiz.
+Score: 87%
+Step 6 — Competency is updated
+PythonBefore: 2/5After:  3/5
+Step 7 — Organization benefits
+The administrator sees:
+Data Analysis competency gapBefore training: 34%After training:  27%
+This demonstrates the complete training → competency → organizational improvement cycle.
+18. Key Differentiator
+CapacityConnect should not be positioned as:
+“A platform for online courses.”
+Instead, position it as:
+“A competency-driven organizational learning platform.”
+The key difference is:
+Traditional LMSCourses  ↓Employee  ↓CompletionCapacityConnectEmployee  ↓Required Competencies  ↓Current Competencies  ↓Skill Gap  ↓Personalized Learning  ↓Assessment  ↓Competency Improvement  ↓Organizational Capacity
+19. Hackathon Demo Strategy
+For the prototype presentation, demonstrate one employee journey and one administrator journey.
+Employee Demo
+Login ↓Competency Profile ↓Take Assessment ↓Show Skill Gap ↓AI/Rule-Based Recommendation ↓Open Course ↓Take Quiz ↓Show Improved Competency
+Admin Demo
+Admin Dashboard ↓Organization Skill Gaps ↓Identify Critical Competency ↓View Affected Departments ↓Create/Recommend Training Program
+Then briefly demonstrate the Knowledge Hub.
+This gives judges a complete story without requiring a huge application.
+20. Final Product Statement
+CapacityConnect is an AI-powered organizational capacity-building platform that goes beyond traditional learning management by identifying competency gaps, recommending personalized learning, measuring skill improvement, and transforming organizational experience into a centralized, searchable knowledge base.
+The core product loop is:
+Assess → Identify → Recommend → Learn → Evaluate → Improve → Analyze
+This loop should remain the central design principle of the entire product.

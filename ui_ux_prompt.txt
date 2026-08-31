@@ -1,0 +1,499 @@
+CapacityConnect — UI/UX Design Prompt
+Design a modern, premium, enterprise-grade web application called CapacityConnect, an AI-powered
+organizational capacity-building and learning management platform.
+
+Product Concept
+CapacityConnect is NOT a traditional LMS. Its core purpose is to identify what employees need to learn
+by comparing their current competencies with the competencies required for their role, calculating
+skill gaps, recommending personalized learning, tracking assessments, measuring competency
+improvement, and providing organization-wide capacity analytics.
+The central product loop is:
+Assess → Identify → Recommend → Learn → Evaluate → Improve → Analyze
+The UI should make this competency-driven workflow immediately understandable.
+
+1. Overall Visual Direction
+Create a polished SaaS dashboard inspired by modern enterprise products such as Linear, Notion,
+Stripe, and modern HR/L&D platforms.
+Style:
+• Clean
+• Professional
+• Intelligent
+• Data-driven
+• Minimal but visually rich
+• Modern enterprise SaaS
+• Highly usable rather than overly decorative
+• Responsive on desktop and mobile
+• Strong visual hierarchy
+• Generous whitespace
+• Rounded cards
+• Subtle borders and shadows
+• Clear typography
+• Accessible contrast
+Use a sophisticated navy / indigo / blue primary palette, supported by neutral white/gray surfaces.
+Use semantic status colors:
+• Green = no gap / completed / improvement
+• Amber = low or medium gap / attention needed
+• Red = critical competency gap
+
+1
+
+• Blue/indigo = recommendations and active learning
+Avoid excessive gradients, glassmorphism, excessive animations, or overly colorful dashboards.
+
+2. Application Layout
+Use a persistent left sidebar on desktop.
+
+Sidebar
+Logo: CapacityConnect
+Navigation:
+Main
+• Dashboard
+• My Competencies
+• Skill Gaps
+• Learning Path
+• Courses
+• Assessments
+• Knowledge Hub
+Workspace
+• My Progress
+• Certificates
+• Knowledge Contributions
+Administration — visible only to administrators
+• Overview
+• Users
+• Departments
+• Roles
+• Competencies
+• Courses
+• Skill Gap Analytics
+• Knowledge Review
+Bottom:
+• Help
+• Settings
+• User profile/avatar
+The sidebar should clearly distinguish employee and administrator functionality through role-based
+navigation.
+
+2
+
+3. Login Page
+Create a premium but simple authentication page.
+Left side:
+• CapacityConnect logo
+• Headline: Build the skills your organization needs.
+• Supporting text explaining competency-driven learning.
+Right side:
+• Login card
+• Email
+• Password
+• Remember me
+• Sign in button
+• Forgot password
+• Optional demo login buttons:
+• Employee Demo
+• Administrator Demo
+Include subtle visual representation of the competency loop in the background.
+
+4. Employee Dashboard
+The employee dashboard is the primary experience.
+Header:
+Good morning, [Employee Name]
+Subtitle: Here’s your competency and learning overview.
+Top KPI cards:
+1. Overall Competency
+2. 68%
+3. circular progress indicator
+4. “+8% this month”
+5. Critical Skill Gaps
+
+3
+
+6. 1
+7. red status
+8. Courses in Progress
+9. 3
+10. Learning Progress
+11. 72%
+Then create a large section:
+
+Your Competency Overview
+Display competencies as horizontal comparison bars.
+Each competency should show:
+Python Current: 2/5 Required: 4/5 Gap: 2 Status: Critical
+Statistics Current: 2/5 Required: 3/5 Gap: 1 Status: Low
+GIS Current: 4/5 Required: 3/5 Gap: 0 Status: No Gap
+Use a clear visual comparison between: Current Level vs Required Level
+Include a “View all competencies” button.
+
+5. Skill Gap Section
+Create a visually strong Skill Gap Analysis component.
+Title: Where you should focus next
+Show skill gaps sorted by priority.
+Example:
+
+Critical
+Data Analysis Current 2/5 → Required 4/5 Gap: 2 levels
+Recommended action: Start learning
+
+4
+
+Medium
+Statistics Current 2/5 → Required 3/5 Gap: 1 level
+
+No Significant Gap
+GIS Current 4/5 → Required 4/5
+Use priority badges and progress bars.
+Make the critical gap visually prominent without making the entire dashboard feel alarming.
+
+6. AI-Powered Recommendations
+Create a large card titled:
+Recommended for You
+Subtitle: Based on your role, competency gaps, assessment history, and completed learning.
+Show 3–4 recommendation cards.
+Example:
+
+Python for Data Analysis
+• Recommended because: Python competency gap
+• Difficulty: Intermediate
+• Duration: 6 hours
+• Improves:
+• Python
+• Data Analysis
+• Statistics
+• Progress: Not started
+Button: Start Learning
+Each recommendation should explain WHY it was recommended. This is important because
+CapacityConnect is competency-driven rather than simply a course catalog.
+
+7. Learning Path
+Create a horizontal or vertical progression:
+Level 1 Python Fundamentals ✓ Completed
+
+5
+
+↓
+Level 2 Data Analysis Fundamentals ● In Progress
+↓
+Level 3 Statistics ○ Locked / Upcoming
+↓
+Level 4 Advanced Data Analysis ○ Upcoming
+↓
+Assessment ○ Final competency assessment
+Display overall path progress at the top.
+Use visual connectors between learning stages.
+
+8. Course Detail Page
+Design a premium course page.
+Header:
+• Course title
+• Difficulty
+• Duration
+• Instructor
+• Course progress
+Hero section: Python for Data Analysis
+Description
+Competencies addressed:
+• Python
+• Data Analysis
+• Statistics
+Learning objectives
+Course content: 1. Introduction 2. Python Fundamentals 3. Working with Data 4. Data Analysis 5.
+Practical Exercise 6. Quiz 7. Final Assessment
+
+6
+
+Right-side sticky card:
+• Progress
+• Continue Learning button
+• Completion status
+Include videos, documents, learning resources, quizzes, and final assessment as specified in the
+product requirements.
+
+9. Assessment Interface
+Create a distraction-free assessment experience.
+Top: Python Competency Assessment
+Progress: Question 7 of 20
+Progress bar
+Main question card:
+• Question
+• Multiple-choice options
+• Previous
+• Next
+Right/top:
+• Time/status indicator if appropriate
+• Questions answered
+At completion show:
+Assessment Complete
+Score: 87%
+Previous competency: 2/5
+New competency: 3/5
+Required: 4/5
+Remaining gap: 1 level
+Show a clear transition from assessment result → updated competency → recommended next learning.
+
+7
+
+10. My Competencies Page
+Create a detailed competency profile.
+Header: My Competencies
+Summary: Overall competency score: 68%
+For every competency display:
+| Competency | Current | Required | Gap | Status | | Python | 2/5 | 4/5 | 2 | Critical | | Data Analysis
+| 2/5 | 4/5 | 2 | Critical | | Statistics | 2/5 | 3/5 | 1 | Medium | | GIS | 3/5 | 3/5 | 0 | No Gap |
+Include:
+• Competency history
+• Last assessed date
+• Assessment results
+• Improvement over time
+Add a simple competency radar chart or bar chart where appropriate.
+
+11. Knowledge Hub
+Create a searchable organizational knowledge repository.
+Header: Knowledge Hub
+Large search bar: Search guidelines, case studies, best practices, tutorials...
+Filters:
+• Category
+• Department
+• Competency
+• Content Type
+Content cards:
+Case Study: Environmental Data Analysis Category: Case Study Department: Analytics Competencies:
+Data Analysis, Python Author: Employee Name Views: 124
+Other content types:
+• Guidelines
+• Reports
+• Case Studies
+
+8
+
+• Best Practices
+• Tutorials
+• FAQs
+• Field Experiences
+• Training Documents
+Include: Contribute Knowledge button.
+
+12. Knowledge Contribution Page
+Create a clean submission form.
+Fields:
+• Title
+• Description
+• Category
+• Department
+• Relevant Competencies
+• Author
+• Upload document/resource
+Button: Submit for Review
+Show submission status:
+• Draft
+• Pending Review
+• Approved
+• Published
+
+13. Administrator Dashboard
+Create a significantly more analytics-focused dashboard.
+Header:
+Organization Capacity Overview
+Top metrics:
+Employees 2,450
+Average Competency 76%
+Critical Skill Gaps 12
+
+9
+
+Active Learning 842
+Then:
+
+Organization Skill Gaps
+Use a horizontal bar chart:
+Data Analytics — 34% Climate Modelling — 29% GIS — 18% Project Management — 15%
+Use filters:
+• Department
+• Role
+• Competency
+• Time Period
+
+14. Organization Competency Analytics
+Create a large analytics section.
+Include:
+• Average competency by department
+• Skill gap distribution
+• Training demand by competency
+• Competency improvement after training
+• Course completion rate
+• Assessment pass rate
+• Learning progress
+• Most common competency gaps
+Use clean charts with informative tooltips.
+Avoid dashboard clutter.
+
+15. Administrator User Detail
+When an administrator searches for an employee, show a detailed employee intelligence page.
+Header: Employee Profile
+Show:
+• Name
+• Employee ID
+
+10
+
+• Department
+• Designation
+• Role
+• Experience
+Sections:
+• Current competencies
+• Required competencies
+• Skill gaps
+• Required courses
+• Courses completed
+• Courses currently learning
+• Assessment performance
+• Learning progress
+• Certificates
+Include a clear before/after competency visualization.
+
+16. Competency Management
+Create an admin CRUD interface for competencies.
+Table columns:
+• Competency
+• Description
+• Level
+• Roles Using It
+• Employees
+• Actions
+Competency scale:
+1 — Awareness 2 — Basic 3 — Proficient 4 — Advanced 5 — Expert
+Allow administrators to:
+• Create competency
+• Edit competency
+• Define descriptions
+• Define levels
+• Assign competencies to roles
+• Set required competency levels
+
+11
+
+17. Role → Competency Mapping
+Create an intuitive mapping interface.
+Example:
+Role: Environmental Data Analyst
+| Competency | Required Level | | Python | 4 | | Data Analysis | 4 | | GIS | 3 | | Statistics | 3 | |
+Environmental Science | 4 | | Report Writing | 3 |
+Use dropdowns or a matrix interface.
+Make this page visually communicate:
+Role → Required Competencies → Employee Gap
+
+18. Course Management
+Admin/trainer interface.
+Course table:
+• Course
+• Instructor
+• Difficulty
+• Duration
+• Competencies
+• Enrolled
+• Completion
+• Status
+Actions:
+• Create course
+• Edit
+• Duplicate
+• Archive
+Course creation should allow:
+• Title
+• Description
+• Instructor
+• Competencies addressed
+• Difficulty
+• Duration
+• Videos
+
+12
+
+• Documents
+• Learning resources
+• Quizzes
+• Final assessment
+
+19. Global Components
+Create a consistent design system.
+
+Cards
+• 12–16px rounded corners
+• subtle border
+• minimal shadow
+• clear heading hierarchy
+
+Buttons
+Primary: Start Learning / Continue / Submit
+Secondary: View Details / Explore
+Destructive: Delete / Remove
+
+Badges
+Critical — red Medium — amber Low — yellow No Gap — green In Progress — blue Completed — green
+Pending Review — amber
+
+Charts
+Use simple:
+• bar charts
+• line charts
+• donut charts
+• progress bars
+• competency comparisons
+Charts must always have labels and accessible legends.
+
+20. UX Principles
+The most important UX principle is:
+Every learning recommendation should connect back to a competency gap.
+
+13
+
+Users should always understand:
+What do I need to improve? ↓ Why do I need to improve it? ↓ What should I learn? ↓ What
+happens after I complete it?
+Avoid making the product feel like a generic course marketplace.
+The dashboard should prioritize competency intelligence first, courses second.
+
+21. Responsive Design
+Design for:
+• Desktop
+• Tablet
+• Mobile
+Desktop: Persistent sidebar + spacious dashboard.
+Tablet: Collapsible sidebar.
+Mobile: Bottom navigation or compact hamburger navigation.
+Cards should stack naturally.
+Tables should become scrollable or transform into mobile cards.
+
+22. Hackathon Demo Optimization
+Optimize the UI around two demo journeys.
+
+Employee Demo
+Login → Employee Dashboard → Competency Profile → Take Assessment → Show Skill Gap → AI/RuleBased Recommendation → Open Course → Take Quiz → Show Improved Competency
+
+Administrator Demo
+Admin Dashboard → Organization Skill Gaps → Identify Critical Competency → View Affected
+Departments → Create/Recommend Training Program → Knowledge Hub
+The UI should make these journeys visually obvious and require minimal navigation.
+
+14
+
+23. Important Product Messaging
+Use the following positioning prominently in appropriate places:
+CapacityConnect Competency-driven organizational learning
+Supporting statement:
+Identify skill gaps. Personalize learning. Measure improvement. Build organizational capacity.
+Do NOT position the product simply as: “A platform for online courses.”
+
+24. Final Design Goal
+The finished UI should look like a real enterprise SaaS product ready for a hackathon demo, not a
+generic dashboard template.
+Prioritize: 1. Competency intelligence 2. Skill-gap visualization 3. Personalized recommendations 4.
+Learning progress 5. Assessment → competency improvement 6. Organizational analytics 7. Knowledge
+sharing
+Make the interface feel intelligent, trustworthy, modern, data-driven, and highly polished, while
+remaining simple enough that a first-time user immediately understands what to do next.
+
+15
+
+
