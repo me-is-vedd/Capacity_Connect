@@ -3,6 +3,8 @@ Users module for CapacityConnect.
 Handles user profiles, course enrollment, and progress tracking.
 """
 from modules.db import get_connection
+from modules.auth import hash_password
+from modules.auth import hash_password
 
 def get_user_profile(user_id: int) -> dict | None:
     """Get full profile of a user, including completed courses and summaries."""
@@ -118,5 +120,70 @@ def get_user_courses(user_id: int) -> list[dict]:
             WHERE uc.user_id = ?
         """, (user_id,))
         return [dict(row) for row in cursor.fetchall()]
+    finally:
+        conn.close()
+
+def get_all_users() -> list[dict]:
+    """Get all users from the database."""
+    conn = get_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users")
+        return [dict(row) for row in cursor.fetchall()]
+    finally:
+        conn.close()
+
+def update_user(user_id: int, updates: dict) -> bool:
+    """Update user fields."""
+    if not updates:
+        return True
+    conn = get_connection()
+    try:
+        cursor = conn.cursor()
+        set_clause = ", ".join(f"{k} = ?" for k in updates.keys())
+        values = list(updates.values())
+        values.append(user_id)
+        cursor.execute(f"UPDATE users SET {set_clause}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?", values)
+        conn.commit()
+        return cursor.rowcount > 0
+    except Exception as e:
+        print(f"Error updating user: {e}")
+        return False
+    finally:
+        conn.close()
+
+def delete_user(user_id: int) -> bool:
+    """Delete a user."""
+    conn = get_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
+        conn.commit()
+        return cursor.rowcount > 0
+    except Exception:
+        return False
+    finally:
+        conn.close()
+
+def add_user(user_data: dict) -> bool:
+    """Add a new user."""
+    conn = get_connection()
+    try:
+        cursor = conn.cursor()
+        
+        # Ensure password_hash is provided, else set a default
+        if 'password_hash' not in user_data:
+            user_data['password_hash'] = hash_password("default123")
+            
+        columns = ", ".join(user_data.keys())
+        placeholders = ", ".join("?" for _ in user_data)
+        values = list(user_data.values())
+        
+        cursor.execute(f"INSERT INTO users ({columns}) VALUES ({placeholders})", values)
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error adding user: {e}")
+        return False
     finally:
         conn.close()

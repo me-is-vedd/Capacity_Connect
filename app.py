@@ -12,7 +12,6 @@ from modules import auth, users, competencies, courses, assessments, recommendat
 # Set page configuration
 st.set_page_config(
     page_title="CapacityConnect | Competency-Driven LMS",
-    page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -376,32 +375,15 @@ if 'quiz_answers' not in st.session_state:
 
 # ----------------- LOGIN PAGE -----------------
 def render_login_page():
-    left_col, right_col = st.columns([1.2, 1], gap="large")
-
-    with left_col:
-        st.write("")
-        st.write("")
-        st.write("")
-        st.title("🎓 CapacityConnect")
-        st.subheader("Competency-driven organizational learning.")
-        st.markdown("""
-        **Identify skill gaps. Personalize learning. Measure improvement. Build organizational capacity.**
-
-        CapacityConnect is an AI-powered organizational capacity-building and learning portal designed to focus on what you need to learn. Unlike a traditional LMS, we connect employee profiles with role definitions, identify competency gaps, and dynamically suggest learning paths to drive measurable development.
-
-        ### The Competency-Driven Learning Loop:
-        1. **Assess** current capabilities via targeted modules.
-        2. **Identify** gaps against role specific required levels.
-        3. **Recommend** bite-sized courses aimed at closing gaps.
-        4. **Learn** inline with interactive videos, readouts, and docs.
-        5. **Evaluate** progress with auto-graded quizzes/assessments.
-        6. **Improve** and update individual competency profiles live.
-        """)
-
-    with right_col:
-        st.write("")
-        st.write("")
-        st.write("")
+    st.markdown("<h1 style='text-align: center; margin-bottom: 0;'> CapacityConnect</h1>", unsafe_allow_html=True)
+    st.markdown("<h4 style='text-align: center; color: #64748B; margin-top: 0;'>Assess . Identify . Recommend . Learn . Improve</h4>", unsafe_allow_html=True)
+    
+    st.write("")
+    st.write("")
+    
+    col1, col2, col3 = st.columns([1, 1.2, 1])
+    
+    with col2:
         with st.container(border=True):
             st.markdown("<h3 style='margin-top:0;'>Sign In</h3>", unsafe_allow_html=True)
             email = st.text_input("Work Email Address", placeholder="name@company.com")
@@ -413,6 +395,17 @@ def render_login_page():
                 if user:
                     st.session_state.logged_in = True
                     st.session_state.user = user
+                    
+                    if auth.verify_password("default123", user['password_hash']):
+                        st.session_state.must_change_password = True
+                    else:
+                        st.session_state.must_change_password = False
+                        
+                    # Set default page based on user role
+                    if user.get('is_admin'):
+                        st.session_state.current_page = "Admin Overview"
+                    else:
+                        st.session_state.current_page = "Dashboard"
                     st.toast(f"Welcome back, {user['name']}!")
                     st.rerun()
                 else:
@@ -422,61 +415,70 @@ def render_login_page():
             st.markdown("<p style='text-align: center; color: #64748B; font-size: 13px;'>Demo Accounts</p>", unsafe_allow_html=True)
             demo_cols = st.columns(2)
             with demo_cols[0]:
-                if st.button("🗝️ Employee Demo", use_container_width=True):
+                if st.button(" Employee Demo", use_container_width=True):
                     # Login as Alex Johnson
                     user = auth.authenticate_user('alex.johnson@company.com', 'demo123')
                     st.session_state.logged_in = True
                     st.session_state.user = user
+                    # Set default page based on user role
+                    if user.get('is_admin'):
+                        st.session_state.current_page = "Admin Overview"
+                    else:
+                        st.session_state.current_page = "Dashboard"
                     st.toast(f"Logged in as demo employee: {user['name']}")
                     st.rerun()
             with demo_cols[1]:
-                if st.button("🛡️ Admin Demo", use_container_width=True):
+                if st.button(" Admin Demo", use_container_width=True):
                     # Login as Admin
                     user = auth.authenticate_user('admin@company.com', 'admin123')
                     st.session_state.logged_in = True
                     st.session_state.user = user
+                    # Set default page based on user role
+                    if user.get('is_admin'):
+                        st.session_state.current_page = "Admin Overview"
+                    else:
+                        st.session_state.current_page = "Dashboard"
                     st.toast(f"Logged in as Administrator")
                     st.rerun()
 
 # ----------------- SIDEBAR NAVIGATION -----------------
 def render_sidebar():
     user = st.session_state.user
-    st.sidebar.markdown("<h2 style='text-align: center; margin-bottom: 0px;'>🎓 CapacityConnect</h2>", unsafe_allow_html=True)
+    st.sidebar.markdown("<h2 style='text-align: center; margin-bottom: 0px;'> CapacityConnect</h2>", unsafe_allow_html=True)
     st.sidebar.markdown(f"<p style='text-align: center; color: #64748B; font-size: 13px; font-style: italic; margin-top:-5px;'>Competency-driven learning</p>", unsafe_allow_html=True)
 
     st.sidebar.divider()
 
     # Employee Navigation Options
-    st.sidebar.markdown("**MAIN**")
+    if not user.get('is_admin'):
+        st.sidebar.markdown("**MAIN**")
 
-    pages = [
-        {"name": "Dashboard", "icon": "📊"},
-        {"name": "My Competencies", "icon": "🎯"},
-        {"name": "Skill Gaps", "icon": "⚡"},
-        {"name": "Learning Path", "icon": "🛤️"},
-        {"name": "Courses", "icon": "📚"},
-        {"name": "Knowledge Hub", "icon": "💡"}
-    ]
+        pages = [
+            {"name": "Dashboard", "icon": ""},
+            {"name": "Skill Gaps", "icon": ""},
+            {"name": "Learning Path", "icon": ""},
+            {"name": "Courses", "icon": ""},
+            {"name": "Knowledge Hub", "icon": ""}
+        ]
 
-    for page in pages:
-        is_active = st.session_state.current_page == page["name"]
-        style = "primary" if is_active else "secondary"
-        if st.sidebar.button(f"{page['icon']} {page['name']}", use_container_width=True, type=style):
-            st.session_state.current_page = page["name"]
-            st.session_state.active_course_id = None
-            st.session_state.active_assessment_id = None
-            st.rerun()
+        for page in pages:
+            is_active = st.session_state.current_page == page["name"]
+            style = "primary" if is_active else "secondary"
+            if st.sidebar.button(f"{page['icon']} {page['name']}", use_container_width=True, type=style):
+                st.session_state.current_page = page["name"]
+                st.session_state.active_course_id = None
+                st.session_state.active_assessment_id = None
+                st.rerun()
 
     # Administrator Nav options
     if user['is_admin']:
         st.sidebar.write("")
         st.sidebar.markdown("**ADMINISTRATION**")
         admin_pages = [
-            {"name": "Admin Overview", "icon": "🏢"},
-            {"name": "Competencies Mgnt", "icon": "🧬"},
-            {"name": "Course Builder", "icon": "🏗️"},
-            {"name": "Role Competencies", "icon": "🗺️"},
-            {"name": "Knowledge Review", "icon": "📥"}
+            {"name": "Admin Overview", "icon": ""},
+            {"name": "User Management", "icon": ""},
+            {"name": "Role Competencies", "icon": ""},
+            {"name": "Knowledge Review", "icon": ""}
         ]
         for page in admin_pages:
             is_active = st.session_state.current_page == page["name"]
@@ -494,7 +496,7 @@ def render_sidebar():
 
     # User profile/Logout
     with st.sidebar.container():
-        st.markdown(f"**👤 {user['name']}**")
+        st.markdown(f"**{user['name']}**")
         st.markdown(f"<span style='font-size:12px; color: #64748B;'>{user['role']}</span>", unsafe_allow_html=True)
         st.markdown(f"<span style='font-size:11px; color: #94A3B8;'>{user['department']}</span>", unsafe_allow_html=True)
         if st.button("Log Out", use_container_width=True):
@@ -554,40 +556,44 @@ def render_employee_dashboard():
                 comp['status']
             )
 
-        if st.button("View all competencies", type="secondary"):
-            st.session_state.current_page = "My Competencies"
-            st.rerun()
-
     with col2:
-        st.markdown("### Priority Recommendations")
-        st.markdown("<p style='color: #64748B; font-size:13px;'>Courses suggested based on your specific competency gaps.</p>", unsafe_allow_html=True)
+        st.markdown("### Competency Radar Visual")
+        
+        comp_names = [c['name'] for c in user_comps]
+        curr_vals = [c['current_level'] for c in user_comps]
+        req_vals = [c['required_level'] for c in user_comps]
 
-        recs = recommendations.get_recommendations_for_user(user['user_id'], max_recommendations=3)
-        if not recs:
-            st.info("🎉 Excellent work! You have closed all required competency gaps for your role.")
+        if comp_names:
+            fig = go.Figure()
+            fig.add_trace(go.Scatterpolar(
+                r=curr_vals,
+                theta=comp_names,
+                fill='toself',
+                name='My Level',
+                line_color='#2563EB',
+                fillcolor='rgba(37, 99, 235, 0.2)'
+            ))
+            fig.add_trace(go.Scatterpolar(
+                r=req_vals,
+                theta=comp_names,
+                fill='toself',
+                name='Required Level',
+                line_color='#EF4444',
+                fillcolor='rgba(239, 68, 68, 0.1)'
+            ))
+            fig.update_layout(
+                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                showlegend=True,
+                margin=dict(l=40, r=40, t=20, b=20)
+            )
+            st.plotly_chart(fig, use_container_width=True)
         else:
-            for rec in recs:
-                with st.container(border=True):
-                    # Title banner
-                    st.markdown(f"#### {rec['title']}")
-                    st.markdown(f"<span style='color: #3B82F6; font-size: 13px; font-weight:600;'>💡 {rec['reason']}</span>", unsafe_allow_html=True)
-                    st.write(rec['description'][:120] + "...")
-
-                    st.markdown(f"""
-                    <span style='font-size:12px; color:#64748B;'>⏱️ Duration: <b>{rec['duration']}</b> &nbsp;|&nbsp; 🏷️ Difficulty: <b>{rec['difficulty']}</b></span>
-                    """, unsafe_allow_html=True)
-
-                    st.write("")
-                    if st.button("Start Learning", key=f"start_rec_{rec['course_id']}", type="primary"):
-                        # Enroll of the user in course
-                        users.enroll_in_course(user['user_id'], rec['course_id'])
-                        st.session_state.active_course_id = rec['course_id']
-                        st.rerun()
+            st.info("No mapped role competencies found.")
 
 # ----------------- MY COMPETENCIES PAGE -----------------
 def render_my_competencies_page():
     user = st.session_state.user
-    st.title("🎯 My Competency Map")
+    st.title(" My Competency Map")
     st.markdown("Detailed breakdown of your capabilities, assessments, and targeted standards.")
 
     user_comps = competencies.get_skill_gaps(user['user_id'])
@@ -631,7 +637,7 @@ def render_my_competencies_page():
         else:
             hist_list = []
             for r in results_hist:
-                status = "Passed ✅" if r['score'] >= r['passing_score'] else "Failed ❌"
+                status = "Passed " if r['score'] >= r['passing_score'] else "Failed "
                 hist_list.append({
                     "Date": r['date'][:10],
                     "Assessment Title": r['assessment_title'],
@@ -688,7 +694,7 @@ def render_my_competencies_page():
 # ----------------- SKILL GAPS SECTION -----------------
 def render_skill_gaps_page():
     user = st.session_state.user
-    st.title("⚡ Skill Gap Analysis")
+    st.title(" Skill Gap Analysis")
     st.markdown("High priority items highlighting where your current competency levels fall below target.")
 
     gaps = competencies.get_skill_gaps(user['user_id'])
@@ -700,11 +706,11 @@ def render_skill_gaps_page():
     low_count = sum(1 for g in gaps if g['status'] == 'Low')
 
     with c_cols[0]:
-        st.metric("🔴 Critical Gaps", critical_count, help="Gap of 2+ levels")
+        st.metric(" Critical Gaps", critical_count, help="Gap of 2+ levels")
     with c_cols[1]:
-        st.metric("🟡 Medium Gaps", medium_count, help="Gap of 2 levels")
+        st.metric(" Medium Gaps", medium_count, help="Gap of 2 levels")
     with c_cols[2]:
-        st.metric("🟢 Low/No Gaps", low_count, help="Gap of 1 or 0 levels")
+        st.metric(" Low/No Gaps", low_count, help="Gap of 1 or 0 levels")
 
     st.subheader("Target Action Plan")
 
@@ -717,11 +723,11 @@ def render_skill_gaps_page():
 
             with cols[0]:
                 if gap['status'] == 'Critical':
-                    st.error("🚨 Critical")
+                    st.error(" Critical")
                 elif gap['status'] == 'Medium':
-                    st.warning("⚠️ Medium")
+                    st.warning(" Medium")
                 else:
-                    st.info("💡 Low")
+                    st.info(" Low")
 
             with cols[1]:
                 st.write(f"### {gap['name']}")
@@ -745,7 +751,7 @@ def render_skill_gaps_page():
 # ----------------- LEARNING PATH SECTION -----------------
 def render_learning_path_page():
     user = st.session_state.user
-    st.title("🛤️ Personalized Learning Path")
+    st.title(" Personalized Learning Path")
     st.markdown("Your custom sequence of learning activities tailored to close your role gaps systematically.")
 
     path = recommendations.get_learning_path_for_user(user['user_id'])
@@ -774,7 +780,7 @@ def render_learning_path_page():
 
     for i, step in enumerate(path):
         is_completed = step['is_completed']
-        status_label = "✅ Completed" if is_completed else ("🔵 Locked/Upcoming" if i > completed_steps else "🟡 Active Next Module")
+        status_label = " Completed" if is_completed else (" Locked/Upcoming" if i > completed_steps else " Active Next Module")
         border_color = "#10B981" if is_completed else ("#3B82F6" if i == completed_steps else "#CBD5E1")
 
         with st.container(border=True):
@@ -784,7 +790,7 @@ def render_learning_path_page():
                 <h3 style="margin: 5px 0;">{step['title']}</h3>
                 <p style="color:#64748B; margin-bottom:5px;">{step['description']}</p>
                 <div style="font-size:12px; color: #64748B;">
-                    ⏱️ {step['duration']} &nbsp;|&nbsp; 🏷️ {step['difficulty']} &nbsp;|&nbsp; 👨🏫 Instructor: {step['instructor']}
+                     {step['duration']} &nbsp;|&nbsp;  {step['difficulty']} &nbsp;|&nbsp;  Instructor: {step['instructor']}
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -805,7 +811,7 @@ def render_courses_page():
         render_course_details()
         return
 
-    st.title("📚 Mapped Courses Catalog")
+    st.title(" Mapped Courses Catalog")
     st.markdown("All training courses designed to target organizational competencies.")
 
     col1, col2 = st.columns([3, 1])
@@ -852,7 +858,7 @@ def render_courses_page():
         with grid_cols[idx % 2]:
             with st.container(border=True):
                 st.write(f"### {c['title']}")
-                st.write(f"👨🏫 **Instructor:** {c['instructor']}")
+                st.write(f" **Instructor:** {c['instructor']}")
                 st.write(c['description'][:140] + "...")
 
                 # Associated competencies
@@ -861,7 +867,7 @@ def render_courses_page():
                 st.markdown(comp_badges, unsafe_allow_html=True)
                 st.write("")
 
-                st.markdown(f"⏱️ **Duration:** {c['duration']} &nbsp;|&nbsp; 🏷️ **Difficulty:** {c['difficulty']}")
+                st.markdown(f" **Duration:** {c['duration']} &nbsp;|&nbsp;  **Difficulty:** {c['difficulty']}")
 
                 # Check status
                 status_btn = "Start Course"
@@ -898,12 +904,12 @@ def render_course_details():
     user_courses_map = {c['course_id']: c for c in users.get_user_courses(user['user_id'])}
     user_enrollment = user_courses_map.get(course_id, {'progress': 0, 'status': 'enrolled'})
 
-    if st.button("⬅️ Back to Courses"):
+    if st.button(" Back to Courses"):
         st.session_state.active_course_id = None
         st.rerun()
 
     st.title(course['title'])
-    st.markdown(f"👨🏫 **Instructor:** {course['instructor']} &nbsp;|&nbsp; ⏱️ **Duration:** {course['duration']} &nbsp;|&nbsp; 🏷️ **Difficulty:** {course['difficulty']}")
+    st.markdown(f" **Instructor:** {course['instructor']} &nbsp;|&nbsp;  **Duration:** {course['duration']} &nbsp;|&nbsp;  **Difficulty:** {course['difficulty']}")
 
     col1, col2 = st.columns([2, 1], gap="large")
 
@@ -929,7 +935,7 @@ def render_course_details():
         """)
 
         st.write("")
-        st.info("💡 Review the content sections to prepare for the final assessment.")
+        st.info(" Review the content sections to prepare for the final assessment.")
 
     with col2:
         # Sticky action card representation
@@ -944,7 +950,7 @@ def render_course_details():
             if user_enrollment['status'] != 'completed':
                 # Button to simulate reading course content
                 if progress < 100:
-                    if st.button("📓 Study Course Materials (+50% Progress)", use_container_width=True, type="primary"):
+                    if st.button(" Study Course Materials (+50% Progress)", use_container_width=True, type="primary"):
                         new_progress = min(progress + 50, 100)
                         users.update_course_progress(user['user_id'], course_id, new_progress)
                         st.toast("Updated course study progress!")
@@ -959,14 +965,14 @@ def render_course_details():
                     st.write("### Assessment Ready")
                     st.write("Ready to test your comprehension? Passing updates your competency score.")
 
-                    if st.button("⚔️ Take Assessment", use_container_width=True, type="primary" if progress >= 100 else "secondary"):
+                    if st.button(" Take Assessment", use_container_width=True, type="primary" if progress >= 100 else "secondary"):
                         # Open assessment quiz
                         st.session_state.active_assessment_id = assessment_id
                         st.session_state.quiz_step = 0
                         st.session_state.quiz_answers = []
                         st.rerun()
             else:
-                st.success("🎉 You have completed this course!")
+                st.success(" You have completed this course!")
                 if course['assessments']:
                     assessment_id = course['assessments'][0]['assessment_id']
                     if st.button("Review Assessment Results", use_container_width=True):
@@ -990,7 +996,7 @@ def render_assessment_page():
 
     # Result summary screen (quiz_step == -1)
     if st.session_state.quiz_step == -1:
-        st.title(f"🏆 {assessment['title']}")
+        st.title(f" {assessment['title']}")
         st.subheader("Quiz Results & Feedback")
 
         result = assessments.get_user_result_for_assessment(user['user_id'], assessment_id)
@@ -1002,7 +1008,7 @@ def render_assessment_page():
             st.write(f"**Score:** {result['score']}% &nbsp;|&nbsp; **Required Passing:** {result['passing_score']}%")
 
             if passed:
-                st.success("🎉 Congratulations! You passed the assessment.")
+                st.success(" Congratulations! You passed the assessment.")
                 # Show updated competency feedback
                 st.markdown("""
                 ### Updated Competencies
@@ -1014,9 +1020,9 @@ def render_assessment_page():
                 for comp in course_details['competencies']:
                     # Update competency of this user to course target level
                     competencies.update_user_competency(user['user_id'], comp['competency_id'], comp['target_level'])
-                    st.write(f"✅ **{comp['name']}** updated to **Level {comp['target_level']} - {competencies.get_competency_level_label(comp['target_level'])}**")
+                    st.write(f" **{comp['name']}** updated to **Level {comp['target_level']} - {competencies.get_competency_level_label(comp['target_level'])}**")
             else:
-                st.error("❌ You did not meet the passing score. We recommend studying the course material and retaking the quiz.")
+                st.error(" You did not meet the passing score. We recommend studying the course material and retaking the quiz.")
 
         if st.button("Back to Course"):
             st.session_state.active_assessment_id = None
@@ -1048,13 +1054,13 @@ def render_assessment_page():
 
     with nav_cols[0]:
         if step > 0:
-            if st.button("◀️ Previous"):
+            if st.button(" Previous"):
                 st.session_state.quiz_step -= 1
                 st.session_state.quiz_answers.pop()
                 st.rerun()
 
     with nav_cols[2]:
-        btn_label = "Submit Answers" if step == total_q - 1 else "Next Question ▶️"
+        btn_label = "Submit Answers" if step == total_q - 1 else "Next Question "
 
         if st.button(btn_label, type="primary", use_container_width=True):
             # Save answer index
@@ -1099,7 +1105,7 @@ def render_knowledge_hub_page():
         render_knowledge_contrib_page()
         return
 
-    st.title("💡 Centralized Knowledge Hub")
+    st.title(" Centralized Knowledge Hub")
     st.markdown("Discover guidelines, best practices, FAQs, case studies, and tutorials shared across departments.")
 
     cols = st.columns([2.5, 1, 1, 1])
@@ -1108,7 +1114,7 @@ def render_knowledge_hub_page():
     with cols[1]:
         st.write("")
         st.write("")
-        contrib_btn = st.button("➕ Contribute Knowledge", use_container_width=True, type="primary")
+        contrib_btn = st.button(" Contribute Knowledge", use_container_width=True, type="primary")
         if contrib_btn:
             st.session_state.show_contrib_form = True
             st.rerun()
@@ -1144,7 +1150,7 @@ def render_knowledge_hub_page():
         with r_cols[idx % 2]:
             with st.container(border=True):
                 st.markdown(f"### {r['title']}")
-                st.markdown(f"<span class='cc-badge cc-badge-draft'>{r['category']}</span> &bull; <span style='font-size:12px; color:#64748B;'>🏢 Department: <b>{r['department']}</b></span>", unsafe_allow_html=True)
+                st.markdown(f"<span class='cc-badge cc-badge-draft'>{r['category']}</span> &bull; <span style='font-size:12px; color:#64748B;'> Department: <b>{r['department']}</b></span>", unsafe_allow_html=True)
                 st.write(r['description'])
 
                 # Mapped competencies
@@ -1152,20 +1158,20 @@ def render_knowledge_hub_page():
                 st.markdown(f"**Competencies:** {comp_badges}", unsafe_allow_html=True)
 
                 st.write("")
-                st.markdown(f"<span style='font-size:12px; color:#64748B;'>✍️ Author: {r['author_name']} &nbsp;|&nbsp; 📅 Shared: {r['created_at'][:10]}</span>", unsafe_allow_html=True)
+                st.markdown(f"<span style='font-size:12px; color:#64748B;'> Author: {r['author_name']} &nbsp;|&nbsp;  Shared: {r['created_at'][:10]}</span>", unsafe_allow_html=True)
 
                 if r['file_path']:
                     st.write("")
-                    st.markdown(f"💾 [Download Resource Document]({r['file_path']})")
+                    st.markdown(f" [Download Resource Document]({r['file_path']})")
 
 # ----------------- KNOWLEDGE CONTRIBUTION FORM -----------------
 def render_knowledge_contrib_page():
     user = st.session_state.user
 
-    st.title("➕ Submit a Knowledge Resource")
+    st.title(" Submit a Knowledge Resource")
     st.markdown("Contribute reports, best practices, case studies, or field guides to the organization.")
 
-    if st.button("⬅️ Back to Knowledge Hub"):
+    if st.button(" Back to Knowledge Hub"):
         st.session_state.show_contrib_form = False
         st.rerun()
 
@@ -1207,13 +1213,13 @@ def render_knowledge_contrib_page():
                     status='pending_review'
                 )
 
-                st.success("🎉 Thank you! Your contribution has been submitted. An administrator will review and publish it shortly.")
+                st.success(" Thank you! Your contribution has been submitted. An administrator will review and publish it shortly.")
                 st.session_state.show_contrib_form = False
                 st.rerun()
 
 # ----------------- ADMIN DASHBOARD / OVERVIEW -----------------
 def render_admin_overview():
-    st.title("🏢 Organization Capacity Analytics")
+    st.title(" Organization Capacity Analytics")
     st.markdown("Real-time telemetry measuring skill gaps, department alignment, and active competency development.")
 
     metrics = analytics.get_org_capacity_metrics()
@@ -1282,13 +1288,67 @@ def render_admin_overview():
         d_df = pd.DataFrame(demand)
         st.bar_chart(d_df, x="competency_name", y="enrollment_count", use_container_width=True)
 
+# ----------------- ADMIN USER MANAGEMENT -----------------
+def render_user_management():
+    st.title(" User Management")
+    st.markdown("View and edit the users table in the system.")
+    
+    all_users = users.get_all_users()
+    if not all_users:
+        st.info("No users found.")
+        return
+        
+    df = pd.DataFrame(all_users)
+    
+    # Store original user ids for reference
+    original_user_ids = df['user_id'].tolist() if 'user_id' in df else []
+    
+    # Render data editor
+    edited_df = st.data_editor(
+        df,
+        num_rows="dynamic",
+        use_container_width=True,
+        key="users_editor",
+        disabled=["user_id", "created_at", "updated_at"]
+    )
+    
+    if st.button("Save Changes", type="primary"):
+        editor_state = st.session_state.get("users_editor", {})
+        changes_made = False
+        
+        # Handle edits
+        for row_idx_str, edits in editor_state.get("edited_rows", {}).items():
+            row_idx = int(row_idx_str)
+            if row_idx < len(original_user_ids):
+                user_id = original_user_ids[row_idx]
+                if users.update_user(user_id, edits):
+                    changes_made = True
+            
+        # Handle deletes
+        for row_idx in editor_state.get("deleted_rows", []):
+            if row_idx < len(original_user_ids):
+                user_id = original_user_ids[row_idx]
+                if users.delete_user(user_id):
+                    changes_made = True
+            
+        # Handle additions
+        for added_row in editor_state.get("added_rows", []):
+            if users.add_user(added_row):
+                changes_made = True
+            
+        if changes_made:
+            st.success("Changes saved successfully!")
+            st.rerun()
+        else:
+            st.info("No changes to save.")
+
 # ----------------- ADMIN COMPETENCY MANAGEMENT -----------------
 def render_admin_competencies():
-    st.title("🧬 Competency Domain Management")
+    st.title(" Competency Domain Management")
     st.markdown("Create, edit, or archive skill competencies across the organization.")
 
     # Sub-form to create competency
-    with st.expander("➕ Define New Competency"):
+    with st.expander(" Define New Competency"):
         name = st.text_input("Competency name", placeholder="e.g. Prompt Engineering")
         desc = st.text_area("Description", placeholder="Describe standard expectations...")
 
@@ -1317,7 +1377,7 @@ def render_admin_competencies():
 
 # ----------------- ADMIN ROLE MAPPING -----------------
 def render_role_mapping():
-    st.title("🗺️ Role → Competency Mapping")
+    st.title(" Role → Competency Mapping")
     st.markdown("Map competencies and required levels for specific organizational designations.")
 
     roles = competencies.get_all_roles()
@@ -1349,7 +1409,7 @@ def render_role_mapping():
                     st.rerun()
             with cols[2]:
                 st.write("")
-                if st.button("🗑️", key=f"delete_mapping_{m['competency_id']}"):
+                if st.button("", key=f"delete_mapping_{m['competency_id']}"):
                     competencies.remove_competency_from_role(selected_role, m['competency_id'])
                     st.toast("Removed competency mapping from role")
                     st.rerun()
@@ -1376,10 +1436,10 @@ def render_role_mapping():
 
 # ----------------- ADMIN COURSE BUILDER -----------------
 def render_course_builder():
-    st.title("🏗️ Course Module Builder")
+    st.title(" Course Module Builder")
     st.markdown("Create learning modules, associate competencies, and configure target levels.")
 
-    with st.expander("➕ Create New Course Module"):
+    with st.expander(" Create New Course Module"):
         with st.form("new_course_form"):
             title = st.text_input("Course Title", placeholder="e.g. Intermediate GIS Mapping")
             desc = st.text_area("Course Syllabus / Description")
@@ -1413,7 +1473,7 @@ def render_course_builder():
             with cols[0]:
                 st.markdown(f"### {c['title']} (`#{c['course_id']}`) &nbsp; <span class='cc-badge cc-badge-{c['status']}'>{c['status']}</span>", unsafe_allow_html=True)
                 st.write(c['description'])
-                st.write(f"👨🏫 **Instructor:** {c['instructor']} &nbsp;|&nbsp; ⏱️ **Duration:** {c['duration']} &nbsp;|&nbsp; 🏷️ **Difficulty:** {c['difficulty']}")
+                st.write(f" **Instructor:** {c['instructor']} &nbsp;|&nbsp;  **Duration:** {c['duration']} &nbsp;|&nbsp;  **Difficulty:** {c['difficulty']}")
 
                 # Mapped competencies
                 st.write("**Target Competencies Addressed:**")
@@ -1446,14 +1506,14 @@ def render_course_builder():
 
 # ----------------- ADMIN KNOWLEDGE HUB REVIEW -----------------
 def render_knowledge_review():
-    st.title("📥 Knowledge Hub Contribution Review")
+    st.title(" Knowledge Hub Contribution Review")
     st.markdown("Approve or reject community-submitted articles and resources before publishing them to the public pool.")
 
     # Get resources pending review
     pending = knowledge.get_all_knowledge_resources(status='pending_review')
 
     if not pending:
-        st.success("✨ All pending knowledge contributions have been reviewed!")
+        st.success(" All pending knowledge contributions have been reviewed!")
         return
 
     for r in pending:
@@ -1461,32 +1521,61 @@ def render_knowledge_review():
             cols = st.columns([4, 1.5])
             with cols[0]:
                 st.markdown(f"### {r['title']}")
-                st.markdown(f"<span class='cc-badge cc-badge-medium'>Pending Review</span> &bull; 🏷️ **Type:** {r['category']} &nbsp;|&nbsp; 🏢 **Dept:** {r['department']}", unsafe_allow_html=True)
+                st.markdown(f"<span class='cc-badge cc-badge-medium'>Pending Review</span> &bull;  **Type:** {r['category']} &nbsp;|&nbsp;  **Dept:** {r['department']}", unsafe_allow_html=True)
                 st.write(r['description'])
                 if r['file_path']:
-                    st.write(f"💾 **Linked path:** {r['file_path']}")
+                    st.write(f" **Linked path:** {r['file_path']}")
 
                 # Mapped competencies
                 comp_badges = " ".join([f'<span class="cc-badge cc-badge-progress">{comp["name"]}</span>' for comp in r['competencies']])
                 st.markdown(f"**Tag competencies:** {comp_badges if comp_badges else '*None*'}", unsafe_allow_html=True)
-                st.write(f"✍️ **Submitted by:** {r['author_name']}")
+                st.write(f" **Submitted by:** {r['author_name']}")
 
             with cols[1]:
                 st.write("")
                 st.write("")
-                if st.button("✅ Approve & Publish", key=f"app_{r['resource_id']}", use_container_width=True):
+                if st.button(" Approve & Publish", key=f"app_{r['resource_id']}", use_container_width=True):
                     knowledge.approve_knowledge_resource(r['resource_id'])
                     st.toast("Appeared in Knowledge Hub!")
                     st.rerun()
-                if st.button("❌ Reject / Draft", key=f"rej_{r['resource_id']}", use_container_width=True):
+                if st.button(" Reject / Draft", key=f"rej_{r['resource_id']}", use_container_width=True):
                     knowledge.reject_knowledge_resource(r['resource_id'])
                     st.toast("Sent back to contributors drafts.")
                     st.rerun()
+
+# ----------------- CHANGE PASSWORD PAGE -----------------
+def render_change_password_page():
+    st.title(" Change Your Password")
+    st.markdown("As a new user, you must change your password from the default before continuing.")
+    
+    with st.container(border=True):
+        new_password = st.text_input("New Password", type="password")
+        confirm_password = st.text_input("Confirm New Password", type="password")
+        
+        if st.button("Update Password", type="primary"):
+            if not new_password or not confirm_password:
+                st.error("Please fill out both fields.")
+            elif new_password == "default123":
+                st.error("Please choose a password other than the default.")
+            elif new_password != confirm_password:
+                st.error("Passwords do not match.")
+            else:
+                user_id = st.session_state.user['user_id']
+                new_hash = auth.hash_password(new_password)
+                if users.update_user(user_id, {'password_hash': new_hash}):
+                    st.session_state.must_change_password = False
+                    st.session_state.user['password_hash'] = new_hash
+                    st.success("Password updated successfully!")
+                    st.rerun()
+                else:
+                    st.error("An error occurred while updating the password.")
 
 # ----------------- MAIN FLOW ROUTER -----------------
 def main():
     if not st.session_state.logged_in:
         render_login_page()
+    elif st.session_state.get('must_change_password', False):
+        render_change_password_page()
     else:
         render_sidebar()
 
@@ -1496,8 +1585,6 @@ def main():
         # Router
         if page == "Dashboard":
             render_employee_dashboard()
-        elif page == "My Competencies":
-            render_my_competencies_page()
         elif page == "Skill Gaps":
             render_skill_gaps_page()
         elif page == "Learning Path":
@@ -1508,6 +1595,8 @@ def main():
             render_knowledge_hub_page()
         elif page == "Admin Overview":
             render_admin_overview()
+        elif page == "User Management":
+            render_user_management()
         elif page == "Competencies Mgnt":
             render_admin_competencies()
         elif page == "Role Competencies":
