@@ -188,22 +188,34 @@ def get_skill_gaps(user_id: int) -> list[dict]:
             JOIN competencies c ON rc.competency_id = c.competency_id
             WHERE rc.role_name = ?
         """, (role_name,))
-        required = cursor.fetchall()
+        required_rows = cursor.fetchall()
+        req_dict = {row['competency_id']: dict(row) for row in required_rows}
 
         # Get user's current competencies
         cursor.execute("""
-            SELECT competency_id, current_level
-            FROM user_competencies
-            WHERE user_id = ?
+            SELECT uc.competency_id, uc.current_level, c.name, c.description
+            FROM user_competencies uc
+            JOIN competencies c ON uc.competency_id = c.competency_id
+            WHERE uc.user_id = ?
         """, (user_id,))
-        current = {row['competency_id']: row['current_level'] for row in cursor.fetchall()}
+        current_rows = cursor.fetchall()
+        curr_dict = {row['competency_id']: dict(row) for row in current_rows}
 
         # Calculate gaps
         gaps = []
-        for req in required:
-            comp_id = req['competency_id']
-            required_level = req['required_level']
-            current_level = current.get(comp_id, 1)  # Default to 1 (Awareness) if not assessed
+        all_comp_ids = set(req_dict.keys()) | set(curr_dict.keys())
+        
+        for comp_id in all_comp_ids:
+            if comp_id in req_dict:
+                name = req_dict[comp_id]['name']
+                desc = req_dict[comp_id]['description']
+                required_level = req_dict[comp_id]['required_level']
+            else:
+                name = curr_dict[comp_id]['name']
+                desc = curr_dict[comp_id]['description']
+                required_level = 0  # Not required for role
+                
+            current_level = curr_dict.get(comp_id, {}).get('current_level', 1)
             gap = required_level - current_level
 
             if gap <= 0:
@@ -217,16 +229,16 @@ def get_skill_gaps(user_id: int) -> list[dict]:
 
             gaps.append({
                 'competency_id': comp_id,
-                'name': req['name'],
-                'description': req['description'],
+                'name': name,
+                'description': desc,
                 'required_level': required_level,
                 'current_level': current_level,
                 'gap': gap,
                 'status': status
             })
 
-        # Sort by gap descending (critical first)
-        gaps.sort(key=lambda x: x['gap'], reverse=True)
+        # Sort by gap descending (critical first), then by name
+        gaps.sort(key=lambda x: (x['gap'], x['name']), reverse=True)
         return gaps
     finally:
         conn.close()

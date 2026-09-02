@@ -153,14 +153,26 @@ def update_user(user_id: int, updates: dict) -> bool:
         conn.close()
 
 def delete_user(user_id: int) -> bool:
-    """Delete a user."""
+    """Delete a user and all their associated records."""
     conn = get_connection()
     try:
         cursor = conn.cursor()
+        
+        # Manually delete associated records to prevent orphaned data
+        cursor.execute("DELETE FROM user_competencies WHERE user_id = ?", (user_id,))
+        cursor.execute("DELETE FROM user_courses WHERE user_id = ?", (user_id,))
+        cursor.execute("DELETE FROM user_learning_path WHERE user_id = ?", (user_id,))
+        cursor.execute("DELETE FROM results WHERE user_id = ?", (user_id,))
+        
+        # Set author_id to NULL for knowledge resources
+        cursor.execute("UPDATE knowledge_resources SET author_id = NULL WHERE author_id = ?", (user_id,))
+        
+        # Finally delete the user
         cursor.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
         conn.commit()
         return cursor.rowcount > 0
-    except Exception:
+    except Exception as e:
+        print(f"Error deleting user: {e}")
         return False
     finally:
         conn.close()

@@ -1,0 +1,100 @@
+Python Competency Assessment
+
+Level: Beginner
+Total Questions: 5
+Total Marks: 5
+
+Q1. Which of the following is the correct syntax for creating a list in Python?
+
+A. {1, 2, 3}
+B. [1, 2, 3]
+C. (1, 2, 3)
+D. <1, 2, 3>
+
+Correct Answer: B
+Difficulty: Easy
+
+
+Q2. What will be the output of the following code?
+
+x = 10
+y = 3
+print(x // y)
+
+A. 3.33
+B. 3
+C. 4
+D. 1
+
+Correct Answer: B
+Difficulty: Easy
+
+
+Q3. Which keyword is used to define a function in Python?
+
+A. function
+B. define
+C. def
+D. func
+
+Correct Answer: C
+Difficulty: Easy
+
+
+Q4. What will be the output of the following code?
+
+numbers = [1, 2, 3, 4, 5]
+print(numbers[2])
+
+A. 1
+B. 2
+C. 3
+D. 4
+
+Correct Answer: C
+Difficulty: Medium
+
+
+Q5. What will be the output of the following code?
+
+x = 5
+
+if x > 3:
+    print("Yes")
+else:
+    print("No")
+
+A. Yes
+B. No
+C. 5
+D. Error
+
+Correct Answer: A
+Difficulty: Medium
+
+
+DEMO COMPETENCY MAPPING
+
+0–1 correct = Level 1 (Beginner)
+2–3 correct = Level 2 (Basic)
+4 correct = Level 3 (Intermediate)
+5 correct = Level 4 (Advanced)
+
+Example:
+
+Score: 2/5
+Current Python Level: Level 2 (Basic)
+Required Python Level: Level 4 (Advanced)
+Skill Gap: 2 Levels
+
+Recommended Learning:
+- Python Fundamentals
+- Python for Data Analysis
+- Functions & Control Flow in Python
+
+Purpose:
+The quiz demonstrates the CapacityConnect flow:
+
+Assessment → Identify Skill Gap → Recommend Learning
+
+The goal is not just to conduct a quiz, but to use the result to identify the employee's competency level and recommend learning that addresses the specific gap.

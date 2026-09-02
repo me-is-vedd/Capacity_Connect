@@ -7,7 +7,7 @@ import json
 import base64
 
 # Import our custom modules
-from modules import auth, users, competencies, courses, assessments, recommendations, knowledge, analytics
+from modules import auth, users, competencies, courses, assessments, recommendations, knowledge, analytics, theme
 
 # Set page configuration
 st.set_page_config(
@@ -16,291 +16,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for modern enterprise look (Linear/Stripe inspired)
-st.markdown("""
-<style>
-    /* Force dark text on light backgrounds - override Streamlit defaults */
-    .stApp, .stApp * {
-        color: #0F172A !important;
-    }
+if 'dark_mode' not in st.session_state:
+    st.session_state.dark_mode = False
 
-    /* Main Layout - force background */
-    .stApp {
-        background-color: #F8FAFC !important;
-    }
-
-    /* Main content area */
-    .main .block-container {
-        background-color: #F8FAFC !important;
-        color: #0F172A !important;
-    }
-
-    /* Typography */
-    html, body, [class*="css"], .stMarkdown, .stText, p, span, div, h1, h2, h3, h4, h5, h6, label {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        color: #0F172A !important;
-    }
-
-    /* Input fields - ensure readable text */
-    .stTextInput > div > div > input,
-    .stTextArea > div > div > textarea,
-    .stSelectbox > div > div > div,
-    .stMultiSelect > div > div > div {
-        background-color: #FFFFFF !important;
-        color: #0F172A !important;
-        border: 1px solid #CBD5E1 !important;
-    }
-
-    .stTextInput > div > div > input:focus,
-    .stTextArea > div > div > textarea:focus {
-        border-color: #3B82F6 !important;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-    }
-
-    /* Buttons */
-    .stButton > button {
-        background-color: #3B82F6 !important;
-        color: #FFFFFF !important;
-        border: none !important;
-        border-radius: 8px !important;
-        font-weight: 600 !important;
-        padding: 0.5rem 1rem !important;
-        transition: all 0.2s !important;
-    }
-
-    .stButton > button:hover {
-        background-color: #2563EB !important;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
-
-    .stButton > button[kind="secondary"] {
-        background-color: #F1F5F9 !important;
-        color: #334155 !important;
-        border: 1px solid #E2E8F0 !important;
-    }
-
-    .stButton > button[kind="secondary"]:hover {
-        background-color: #E2E8F0 !important;
-        color: #0F172A !important;
-    }
-
-    /* Cards/Containers */
-    .stContainer, div[data-testid="stVerticalBlockBorderWrapper"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
-        border-radius: 12px !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-    }
-
-    /* Clean Cards */
-    .cc-card {
-        background-color: #FFFFFF !important;
-        padding: 24px;
-        border-radius: 12px;
-        border: 1px solid #E2E8F0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
-        color: #0F172A !important;
-    }
-
-    .cc-kpi-val {
-        font-size: 28px;
-        font-weight: 700;
-        color: #0F172A !important;
-        margin: 4px 0;
-    }
-
-    .cc-kpi-change-pos {
-        color: #10B981 !important;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    .cc-kpi-change-neg {
-        color: #EF4444 !important;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    /* Priority Badges */
-    .cc-badge {
-        padding: 4px 10px;
-        border-radius: 9999px;
-        font-size: 12px;
-        font-weight: 600;
-        display: inline-block;
-    }
-    .cc-badge-critical { background-color: #FEE2E2 !important; color: #991B1B !important; }
-    .cc-badge-medium { background-color: #FEF3C7 !important; color: #92400E !important; }
-    .cc-badge-low { background-color: #FEF9C3 !important; color: #854D0E !important; }
-    .cc-badge-nogap { background-color: #D1FAE5 !important; color: #065F46 !important; }
-    .cc-badge-progress { background-color: #DBEAFE !important; color: #1E40AF !important; }
-    .cc-badge-draft { background-color: #F1F5F9 !important; color: #475569 !important; }
-
-    /* Sidebar - force dark text */
-    .stSidebar, .stSidebar * {
-        background-color: #FFFFFF !important;
-        color: #0F172A !important;
-    }
-
-    .stSidebar .stButton > button {
-        background-color: #F1F5F9 !important;
-        color: #334155 !important;
-        border: 1px solid #E2E8F0 !important;
-    }
-
-    .stSidebar .stButton > button:hover {
-        background-color: #3B82F6 !important;
-        color: #FFFFFF !important;
-    }
-
-    .stSidebar .stButton > button[kind="primary"] {
-        background-color: #3B82F6 !important;
-        color: #FFFFFF !important;
-    }
-
-    /* Metrics */
-    [data-testid="stMetricValue"] {
-        color: #0F172A !important;
-        font-size: 28px !important;
-        font-weight: 700 !important;
-    }
-
-    [data-testid="stMetricLabel"] {
-        color: #64748B !important;
-        font-size: 12px !important;
-        font-weight: 600 !important;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    /* Progress bars */
-    .stProgress > div > div > div {
-        background-color: #3B82F6 !important;
-    }
-
-    /* Radio/Checkbox labels */
-    .stRadio > label, .stCheckbox > label {
-        color: #0F172A !important;
-    }
-
-    .stRadio > div[role="radiogroup"] > label {
-        background-color: #F8FAFC !important;
-        border: 1px solid #E2E8F0 !important;
-        border-radius: 8px !important;
-        padding: 12px 16px !important;
-        margin: 8px 0 !important;
-        color: #0F172A !important;
-    }
-
-    .stRadio > div[role="radiogroup"] > label:hover {
-        background-color: #DBEAFE !important;
-        border-color: #3B82F6 !important;
-    }
-
-    .stRadio > div[role="radiogroup"] > label[data-checked="true"] {
-        background-color: #DBEAFE !important;
-        border-color: #3B82F6 !important;
-    }
-
-    /* Dataframe/Table */
-    .stDataFrame, .stTable {
-        color: #0F172A !important;
-    }
-
-    .stDataFrame [data-testid="stDataFrameResizable"] {
-        background-color: #FFFFFF !important;
-    }
-
-    /* Tabs */
-    .stTabs [data-baseweb="tab-list"] {
-        background-color: #F1F5F9 !important;
-        border-radius: 8px !important;
-        padding: 4px !important;
-    }
-
-    .stTabs [data-baseweb="tab"] {
-        color: #475569 !important;
-        font-weight: 500 !important;
-    }
-
-    .stTabs [aria-selected="true"] {
-        background-color: #FFFFFF !important;
-        color: #1E40AF !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-    }
-
-    /* Selectbox dropdown */
-    .stSelectbox [data-baseweb="select"] > div {
-        background-color: #FFFFFF !important;
-        color: #0F172A !important;
-        border: 1px solid #CBD5E1 !important;
-    }
-
-    /* Form submit button */
-    .stFormSubmitButton > button {
-        background-color: #3B82F6 !important;
-        color: #FFFFFF !important;
-        font-weight: 600 !important;
-    }
-
-    /* Expander */
-    .streamlit-expanderHeader {
-        background-color: #F8FAFC !important;
-        color: #0F172A !important;
-        font-weight: 600 !important;
-    }
-
-    .streamlit-expanderContent {
-        background-color: #FFFFFF !important;
-        color: #0F172A !important;
-        border: 1px solid #E2E8F0 !important;
-        border-top: none !important;
-        border-radius: 0 0 12px 12px !important;
-    }
-
-    /* File uploader */
-    .stFileUploader > div {
-        background-color: #F8FAFC !important;
-        border: 2px dashed #CBD5E1 !important;
-        border-radius: 12px !important;
-    }
-
-    /* Toast/Notifications */
-    .stToast {
-        background-color: #1E293B !important;
-        color: #FFFFFF !important;
-    }
-
-    /* Learning Path Connection Nodes */
-    .lp-node {
-        padding: 16px;
-        background-color: #FFFFFF !important;
-        border-radius: 8px;
-        border: 1px solid #E2E8F0;
-        text-align: center;
-        margin: 10px 0;
-        color: #0F172A !important;
-    }
-    .lp-arrow {
-        text-align: center;
-        font-size: 20px;
-        color: #64748B !important;
-        margin: 5px 0;
-    }
-
-    /* Force all markdown text to be dark */
-    .stMarkdown, .stMarkdown * {
-        color: #0F172A !important;
-    }
-
-    /* Override any white text on white backgrounds */
-    .element-container, .element-container * {
-        color: #0F172A !important;
-    }
-</style>
-""", unsafe_allow_html=True)
+if st.session_state.dark_mode:
+    st.markdown(theme.get_dark_css(), unsafe_allow_html=True)
+else:
+    st.markdown(theme.get_light_css(), unsafe_allow_html=True)
 
 # Helper function to render CSS cards in markdown
 def draw_card(title, value, change="", target_goal=""):
@@ -374,8 +96,30 @@ if 'quiz_answers' not in st.session_state:
     st.session_state.quiz_answers = []
 
 # ----------------- LOGIN PAGE -----------------
+def get_base64_of_bin_file(bin_file):
+    try:
+        with open(bin_file, 'rb') as f:
+            data = f.read()
+        return base64.b64encode(data).decode()
+    except Exception:
+        return ""
+
+def check_onboarding_quiz(user):
+    """Check if the user needs to take the onboarding quiz."""
+    if user.get('is_admin'):
+        return False
+        
+    onboarding_assessment = assessments.get_assessment_by_title("Python Competency Assessment")
+    if not onboarding_assessment:
+        return False
+        
+    result = assessments.get_user_result_for_assessment(user['user_id'], onboarding_assessment['assessment_id'])
+    return result is None
+
 def render_login_page():
-    st.markdown("<h1 style='text-align: center; margin-bottom: 0;'> CapacityConnect</h1>", unsafe_allow_html=True)
+    logo_base64 = get_base64_of_bin_file("static/images/logo.png")
+    logo_html = f'<img src="data:image/png;base64,{logo_base64}" style="height: 150px; margin-right: 20px;">' if logo_base64 else ""
+    st.markdown(f"<div style='display: flex; justify-content: center; align-items: center; margin-bottom: 0;'>{logo_html}<h1 style='margin-bottom: 0;'> CapacityConnect</h1></div>", unsafe_allow_html=True)
     st.markdown("<h4 style='text-align: center; color: #64748B; margin-top: 0;'>Assess . Identify . Recommend . Learn . Improve</h4>", unsafe_allow_html=True)
     
     st.write("")
@@ -401,6 +145,13 @@ def render_login_page():
                     else:
                         st.session_state.must_change_password = False
                         
+                    if not st.session_state.must_change_password and check_onboarding_quiz(user):
+                        st.session_state.must_take_onboarding_quiz = True
+                        st.session_state.onboarding_step = 0
+                        st.session_state.onboarding_answers = []
+                    else:
+                        st.session_state.must_take_onboarding_quiz = False
+                        
                     # Set default page based on user role
                     if user.get('is_admin'):
                         st.session_state.current_page = "Admin Overview"
@@ -420,6 +171,14 @@ def render_login_page():
                     user = auth.authenticate_user('alex.johnson@company.com', 'demo123')
                     st.session_state.logged_in = True
                     st.session_state.user = user
+                    
+                    if check_onboarding_quiz(user):
+                        st.session_state.must_take_onboarding_quiz = True
+                        st.session_state.onboarding_step = 0
+                        st.session_state.onboarding_answers = []
+                    else:
+                        st.session_state.must_take_onboarding_quiz = False
+                        
                     # Set default page based on user role
                     if user.get('is_admin'):
                         st.session_state.current_page = "Admin Overview"
@@ -493,6 +252,8 @@ def render_sidebar():
     st.sidebar.write("")
     st.sidebar.write("")
     st.sidebar.divider()
+    st.sidebar.toggle("Dark Mode", key="dark_mode")
+    st.sidebar.divider()
 
     # User profile/Logout
     with st.sidebar.container():
@@ -500,6 +261,7 @@ def render_sidebar():
         st.markdown(f"<span style='font-size:12px; color: #64748B;'>{user['role']}</span>", unsafe_allow_html=True)
         st.markdown(f"<span style='font-size:11px; color: #94A3B8;'>{user['department']}</span>", unsafe_allow_html=True)
         if st.button("Log Out", use_container_width=True):
+            st.session_state.clear()
             st.session_state.logged_in = False
             st.session_state.user = None
             st.session_state.current_page = "Dashboard"
@@ -1342,6 +1104,24 @@ def render_user_management():
         else:
             st.info("No changes to save.")
 
+    st.write("---")
+    st.subheader("Delete User Account")
+    with st.expander("Permanently Remove a User"):
+        user_to_delete = st.selectbox(
+            "Select user to delete", 
+            options=df['user_id'].tolist(), 
+            format_func=lambda x: f"ID: {x} - {df[df['user_id'] == x]['name'].values[0]} ({df[df['user_id'] == x]['email'].values[0]})"
+        )
+        if st.button("Delete Selected User", type="primary", key="explicit_delete_user_btn"):
+            if user_to_delete == st.session_state.user['user_id']:
+                st.error("You cannot delete your own active account.")
+            else:
+                if users.delete_user(user_to_delete):
+                    st.success("User deleted successfully!")
+                    st.rerun()
+                else:
+                    st.error("Failed to delete user.")
+
 # ----------------- ADMIN COMPETENCY MANAGEMENT -----------------
 def render_admin_competencies():
     st.title(" Competency Domain Management")
@@ -1390,7 +1170,7 @@ def render_role_mapping():
         st.info("No competencies mapped to this role yet.")
     else:
         # Display as key value settings
-        for m in current_mappings:
+        for idx, m in enumerate(current_mappings):
             cols = st.columns([3, 1.5, 0.5])
             with cols[0]:
                 st.write(f"**{m['name']}**")
@@ -1401,7 +1181,7 @@ def render_role_mapping():
                     "Required Level",
                     levels,
                     index=levels.index(m['required_level']),
-                    key=f"role_lvl_{m['competency_id']}"
+                    key=f"role_lvl_{selected_role}_{m['competency_id']}_{idx}"
                 )
                 if new_lvl != m['required_level']:
                     competencies.map_competency_to_role(selected_role, m['competency_id'], new_lvl)
@@ -1409,7 +1189,7 @@ def render_role_mapping():
                     st.rerun()
             with cols[2]:
                 st.write("")
-                if st.button("", key=f"delete_mapping_{m['competency_id']}"):
+                if st.button("", key=f"delete_mapping_{selected_role}_{m['competency_id']}_{idx}"):
                     competencies.remove_competency_from_role(selected_role, m['competency_id'])
                     st.toast("Removed competency mapping from role")
                     st.rerun()
@@ -1565,10 +1345,145 @@ def render_change_password_page():
                 if users.update_user(user_id, {'password_hash': new_hash}):
                     st.session_state.must_change_password = False
                     st.session_state.user['password_hash'] = new_hash
+                    
+                    if check_onboarding_quiz(st.session_state.user):
+                        st.session_state.must_take_onboarding_quiz = True
+                        st.session_state.onboarding_step = 0
+                        st.session_state.onboarding_answers = []
+                        
                     st.success("Password updated successfully!")
                     st.rerun()
                 else:
                     st.error("An error occurred while updating the password.")
+
+# ----------------- ONBOARDING QUIZ PAGE -----------------
+def render_onboarding_quiz_page():
+    user = st.session_state.user
+    
+    assessment = assessments.get_assessment_by_title("Python Competency Assessment")
+    if not assessment:
+        st.error("Onboarding assessment not found.")
+        return
+        
+    questions = assessment.get('questions', [])
+    # Wait, get_assessment_by_title doesn't fetch questions. I need to fetch them.
+    assessment = assessments.get_assessment_by_id(assessment['assessment_id'])
+    questions = assessment['questions']
+    
+    total_q = len(questions)
+    
+    if 'onboarding_step' not in st.session_state:
+        st.session_state.onboarding_step = 0
+        st.session_state.onboarding_answers = []
+        
+    step = st.session_state.onboarding_step
+    
+    if step == -1:
+        st.title(" Assessment Complete")
+        st.subheader("Your Competency Mapping")
+        
+        result = assessments.get_user_result_for_assessment(user['user_id'], assessment['assessment_id'])
+        score = result['score'] if result else 0
+        # Convert % back to correct questions out of 5 (assuming each is 20%)
+        correct_count = round(score / 20)
+        
+        # Mapping logic
+        if correct_count <= 1:
+            level = 1
+            lvl_label = "Level 1 (Beginner)"
+        elif correct_count <= 3:
+            level = 2
+            lvl_label = "Level 2 (Basic)"
+        elif correct_count == 4:
+            level = 3
+            lvl_label = "Level 3 (Intermediate)"
+        else:
+            level = 4
+            lvl_label = "Level 4 (Advanced)"
+            
+        st.write(f"**Score:** {correct_count}/5")
+        st.write(f"**Current Python Level:** {lvl_label}")
+        
+        # We need to find the user's required level to compute skill gap
+        # But for demo purposes, we can just display the recommendation
+        st.markdown("""
+        **Recommended Learning (if gap exists):**
+        - Python Fundamentals
+        - Python for Data Analysis
+        - Functions & Control Flow in Python
+        """)
+        
+        if st.button("Continue to Dashboard", type="primary"):
+            st.session_state.must_take_onboarding_quiz = False
+            st.rerun()
+        return
+
+    st.markdown(f"<h2>{assessment['title']}</h2>", unsafe_allow_html=True)
+    st.markdown("Please complete this initial assessment to calibrate your learning path.")
+    st.progress((step + 1) / total_q)
+    st.markdown(f"<p style='color: #64748B;'>Question <b>{step + 1}</b> of <b>{total_q}</b></p>", unsafe_allow_html=True)
+
+    q = questions[step]
+    options = json.loads(q['options'])
+
+    with st.container(border=True):
+        st.markdown(f"### {q['question']}")
+
+        selected_option = st.radio(
+            "Select the correct answer:",
+            options,
+            key=f"onb_q_{q['question_id']}"
+        )
+
+    st.write("")
+    nav_cols = st.columns([1, 8, 1.5])
+
+    with nav_cols[0]:
+        if step > 0:
+            if st.button(" Previous"):
+                st.session_state.onboarding_step -= 1
+                st.session_state.onboarding_answers.pop()
+                st.rerun()
+
+    with nav_cols[2]:
+        btn_label = "Submit Answers" if step == total_q - 1 else "Next Question "
+
+        if st.button(btn_label, type="primary", use_container_width=True):
+            ans_idx = options.index(selected_option)
+            st.session_state.onboarding_answers.append(ans_idx)
+
+            if step == total_q - 1:
+                # Grade quiz
+                assessments.submit_assessment_result(
+                    user['user_id'],
+                    assessment['assessment_id'],
+                    st.session_state.onboarding_answers
+                )
+                
+                # Fetch result to calculate level
+                result = assessments.get_user_result_for_assessment(user['user_id'], assessment['assessment_id'])
+                correct_count = round(result['score'] / (100 / total_q)) if total_q > 0 else 0
+                
+                if correct_count <= 1:
+                    level = 1
+                elif correct_count <= 3:
+                    level = 2
+                elif correct_count == 4:
+                    level = 3
+                else:
+                    level = 4
+                
+                # Update python competency
+                python_comp = next((c for c in competencies.get_all_competencies() if c['name'] == "Python"), None)
+                if python_comp:
+                    competencies.update_user_competency(user['user_id'], python_comp['competency_id'], level)
+
+                st.session_state.onboarding_step = -1
+                st.toast("Onboarding assessment complete!")
+                st.rerun()
+            else:
+                st.session_state.onboarding_step += 1
+                st.rerun()
 
 # ----------------- MAIN FLOW ROUTER -----------------
 def main():
@@ -1576,6 +1491,8 @@ def main():
         render_login_page()
     elif st.session_state.get('must_change_password', False):
         render_change_password_page()
+    elif st.session_state.get('must_take_onboarding_quiz', False):
+        render_onboarding_quiz_page()
     else:
         render_sidebar()
 

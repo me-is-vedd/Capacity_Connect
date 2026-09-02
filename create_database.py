@@ -223,10 +223,9 @@ def seed_data(conn):
         print("Database already seeded, skipping...")
         return
 
-    # Password hashing (simple for demo - in production use bcrypt)
-    import hashlib
+    import bcrypt
     def hash_password(password):
-        return hashlib.sha256(password.encode()).hexdigest()
+        return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
     # Insert demo users
     demo_users = [
@@ -234,6 +233,9 @@ def seed_data(conn):
         (2, "Sarah Chen", "sarah.chen@company.com", "Analytics", "Environmental Data Analyst", "Senior Data Analyst", "5 years", hash_password("demo123"), 0),
         (3, "Michael Torres", "michael.torres@company.com", "Engineering", "Software Engineer", "Backend Developer", "4 years", hash_password("demo123"), 0),
         (4, "Admin User", "admin@company.com", "Management", "Administrator", "System Admin", "8 years", hash_password("admin123"), 1),
+        (5, "Priya Sharma", "priya.sharma@company.com", "Engineering", "Software Engineer", "Frontend Developer", "2 years", hash_password("demo123"), 0),
+        (6, "David Miller", "david.miller@company.com", "Management", "Product Manager", "Product Manager", "6 years", hash_password("demo123"), 0),
+        (7, "Lisa Wang", "lisa.wang@company.com", "Analytics", "Environmental Data Analyst", "Junior Data Analyst", "1 year", hash_password("demo123"), 0),
     ]
 
     cursor.executemany("""
@@ -353,6 +355,7 @@ def seed_data(conn):
         (3, "Advanced Data Analysis Assessment", 75),
         (4, "GIS for Environmental Data Assessment", 70),
         (5, "Environmental Report Writing Assessment", 70),
+        (None, "Python Competency Assessment", 0),  # Onboarding Assessment
     ]
 
     cursor.executemany("""
@@ -383,6 +386,13 @@ def seed_data(conn):
 
         # Assessment 5: Report Writing
         (11, 5, "What should an executive summary include?", json.dumps(["All technical details", "Key findings and recommendations", "Raw data tables", "Methodology only"]), 1),
+
+        # Assessment 6: Python Competency Assessment (Onboarding)
+        (12, 6, "Which of the following is the correct syntax for creating a list in Python?", json.dumps(["{1, 2, 3}", "[1, 2, 3]", "(1, 2, 3)", "<1, 2, 3>"]), 1),
+        (13, 6, "What will be the output of the following code?\nx = 10\ny = 3\nprint(x // y)", json.dumps(["3.33", "3", "4", "1"]), 1),
+        (14, 6, "Which keyword is used to define a function in Python?", json.dumps(["function", "define", "def", "func"]), 2),
+        (15, 6, "What will be the output of the following code?\nnumbers = [1, 2, 3, 4, 5]\nprint(numbers[2])", json.dumps(["1", "2", "3", "4"]), 2),
+        (16, 6, "What will be the output of the following code?\nx = 5\nif x > 3:\n    print('Yes')\nelse:\n    print('No')", json.dumps(["Yes", "No", "5", "Error"]), 0),
     ]
 
     cursor.executemany("""

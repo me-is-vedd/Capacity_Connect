@@ -43,8 +43,8 @@ def get_assessments_for_course(course_id: int) -> list[dict]:
     finally:
         conn.close()
 
-def create_assessment(course_id: int, title: str, passing_score: int = 70) -> int:
-    """Create a new assessment for a course."""
+def create_assessment(title: str, course_id: int | None = None, passing_score: int = 70) -> int:
+    """Create a new assessment for a course (or standalone if course_id is None)."""
     conn = get_connection()
     try:
         cursor = conn.cursor()
@@ -241,5 +241,18 @@ def get_assessment_stats(assessment_id: int) -> dict:
         """, (assessment_id, assessment_id))
         row = cursor.fetchone()
         return dict(row) if row else {}
+    finally:
+        conn.close()
+def get_assessment_by_title(title: str) -> dict | None:
+    """Get assessment by title."""
+    conn = get_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT assessment_id, course_id, title, passing_score
+            FROM assessments WHERE title = ?
+        """, (title,))
+        row = cursor.fetchone()
+        return dict(row) if row else None
     finally:
         conn.close()
